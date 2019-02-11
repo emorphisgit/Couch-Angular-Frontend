@@ -1,0 +1,74 @@
+<div class="page_root_d">
+  <!--header content start-->
+  <div class="hdr">
+    RandR
+  </div>
+  <!--header content end-->
+  <!--add product type content start-->
+  <div class="add_prod_typ_d1">
+    <span class="add_prod_typ_lbl">Add product type: </span>
+    <input class="add_prod_typ_inpt" id="p_id" value="" #p_el placeholder="Product type" type="text" />
+    <button class="w3-button w3-blue add_prod_typ_btn" type="" (click)="addProductType(p_el);">Save</button>
+  </div>
+  <!--add product type content end-->
+
+  <div class="typ_root_d">
+    <!--unpublish product type list start-->
+    <div class="typ_d1">
+      <div class="typ_d2">
+        Publish product type(s)
+      </div>
+      <div class="typ_d3">
+        <div *ngFor="let type of products_type ; let i = index " [attr.data-index]="i">
+          <ng-container *ngIf="type.is_published == '1'">
+            <label><input type="checkbox" (change)="checkChange($event, type, 'pub');" /><span class="typ_d4">{{type.name}}</span>
+            </label>
+          </ng-container>
+        </div>
+      </div>
+      <div class="typ_d5">
+        <button class="w3-button w3-blue typ_btn" type="" (click)="unPublish();">Unpublish</button>
+      </div>
+    </div>
+    <!--unpublish product type list end-->
+    <!--publish product type list start-->
+    <div class="typ_d1">
+      <div class="typ_d2">
+        Unpublish product type(s)
+      </div>
+      <div class="typ_d3">
+        <div *ngFor="let type of products_type ; let i = index " [attr.data-index]="i">
+          <ng-container *ngIf="type.is_published == '0'">
+            <label><input type="checkbox" (change)="checkChange($event, type, 'punpubub');" /><span class="typ_d4">{{type.name}}</span>
+            </label>
+          </ng-container>
+        </div>
+      </div>
+      <div class="typ_d5">
+        <button class="w3-button w3-blue typ_btn" type="" (click)="publish();">Publish</button>
+      </div>
+    </div>
+    <!--publish product type list end-->
+    <!--product list start-->
+    <div class="prod_d1">
+      <div class="prod_d2">
+        Registered product(s)
+      </div>
+      <div class="prod_d3">
+        <table>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Serial Number</th>
+          </tr>
+          <tr *ngFor="let product of products ; let i = index " [attr.data-index]="i">
+            <td>{{product.name}}</td>
+            <td>{{product.type}}</td>
+            <td>{{product.serial_number}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <!--product list end-->
+  </div>
+</div>
