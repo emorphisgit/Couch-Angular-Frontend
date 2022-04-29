@@ -8,13 +8,13 @@ import { ConfigData } from "../../config";
   styleUrls: ["./home.component.css"]
 })
 export class HomeComponent implements OnInit {
-  product_types_obj: any;
-  sync_url: any;
-  db_name: any;
-  bucket_data: any;
-  products_type: any = [];
-  pub_changed_products_type: any = {};
-  unpub_changed_products_type: any = [];
+  productTypesObj: any;
+  syncUrl: any;
+  dbName: any;
+  bucketData: any;
+  productsType: any = [];
+  pubChangedProductsType: any = {};
+  unpubChangedProductsType: any = [];
   products: any = [];
 
   constructor(
@@ -22,10 +22,10 @@ export class HomeComponent implements OnInit {
     private zone: NgZone,
     private config: ConfigData
   ) {
-    this.bucket_data = [];
-    this.sync_url = this.config.sync_url;
-    this.db_name = this.config.db_name;
-    this.product_types_obj = {
+    this.bucketData = [];
+    this.syncUrl = this.config.SYNC_URL;
+    this.dbName = this.config.DB_NAME;
+    this.productTypesObj = {
       name: "",
       is_published: 1,
       is_product: false
@@ -33,7 +33,7 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.database.sync(this.sync_url + "/" + this.db_name);
+    this.database.sync(this.syncUrl + "/" + this.dbName);
     this.database.getChangeListener().subscribe(data => {
       this.zone.run(() => {
         for (let i = 0; i < data.change.docs.length; i++) {
@@ -46,13 +46,13 @@ export class HomeComponent implements OnInit {
             }
           };
           if (_data.doc.hasOwnProperty("is_product")) {
-            const _in = this.bucket_data.findIndex(item => item.id == _data.id);
+            const _in = this.bucketData.findIndex(item => item.id == _data.id);
             if (_in == null || _in == undefined || _in == -1) {
-              this.bucket_data.unshift(Object.assign({}, _data));
+              this.bucketData.unshift(Object.assign({}, _data));
               this.dataManager();
             } else {
-              this.bucket_data.splice(_in, 1);
-              this.bucket_data.unshift(Object.assign({}, _data));
+              this.bucketData.splice(_in, 1);
+              this.bucketData.unshift(Object.assign({}, _data));
               this.dataManager();
             }
           }
@@ -62,11 +62,11 @@ export class HomeComponent implements OnInit {
 
     this.database.fetch().then(
       result => {
-        this.bucket_data = [];
-        result.rows = result.rows.filter(function(obj) {
+        this.bucketData = [];
+        result.rows = result.rows.filter(function (obj) {
           return obj.doc.hasOwnProperty("is_product");
         });
-        this.bucket_data = result.rows;
+        this.bucketData = result.rows;
         this.dataManager();
       },
       error => {
@@ -76,27 +76,27 @@ export class HomeComponent implements OnInit {
   }
 
   dataManager() {
-    this.products_type = [];
+    this.productsType = [];
     this.products = [];
-    for (let i = 0; i < this.bucket_data.length; i++) {
-      const _data = this.bucket_data[i];
+    for (let i = 0; i < this.bucketData.length; i++) {
+      const _data = this.bucketData[i];
       if (_data.doc.hasOwnProperty("is_product")) {
         if (_data.doc.is_product) {
           this.products.push(_data.doc);
         } else {
-          this.products_type.push(_data.doc);
+          this.productsType.push(_data.doc);
         }
       }
     }
   }
 
-  addProductType(_element) {
+  addProductType(_element: any) {
     let _type_name = _element.value;
     if (_type_name != "" && _type_name != undefined && _type_name != null) {
-      this.product_types_obj.name = _type_name;
+      this.productTypesObj.name = _type_name;
       this.insertData(
-        this.product_types_obj.name + "" + this.makeId(),
-        this.product_types_obj,
+        this.productTypesObj.name + "" + this.makeId(),
+        this.productTypesObj,
         _doc => {
           _type_name = "";
           _element.value = "";
@@ -107,44 +107,44 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  checkChange(e, _type_obj, _type) {
+  checkChange(e: any, _type_obj: any, _type: string) {
     _type_obj = Object.assign({}, _type_obj);
     if (_type == "pub") {
       if (e.target.checked) {
         _type_obj["is_published"] = "0";
-        this.pub_changed_products_type[_type_obj._id] = _type_obj;
+        this.pubChangedProductsType[_type_obj._id] = _type_obj;
       } else {
-        delete this.pub_changed_products_type[_type_obj._id];
+        delete this.pubChangedProductsType[_type_obj._id];
       }
     } else {
       if (e.target.checked) {
         _type_obj["is_published"] = "1";
-        this.unpub_changed_products_type[_type_obj._id] = _type_obj;
+        this.unpubChangedProductsType[_type_obj._id] = _type_obj;
       } else {
-        delete this.unpub_changed_products_type[_type_obj._id];
+        delete this.unpubChangedProductsType[_type_obj._id];
       }
     }
   }
 
   unPublish() {
-    Object.keys(this.pub_changed_products_type).forEach(key => {
-      delete this.pub_changed_products_type[key]["_id"];
-      delete this.pub_changed_products_type[key]["_rev"];
-      this.insertData(key, this.pub_changed_products_type[key], _doc => {});
-      delete this.pub_changed_products_type[key];
+    Object.keys(this.pubChangedProductsType).forEach(key => {
+      delete this.pubChangedProductsType[key]["_id"];
+      delete this.pubChangedProductsType[key]["_rev"];
+      this.insertData(key, this.pubChangedProductsType[key], _doc => { });
+      delete this.pubChangedProductsType[key];
     });
   }
 
   publish() {
-    Object.keys(this.unpub_changed_products_type).forEach(key => {
-      delete this.unpub_changed_products_type[key]["_id"];
-      delete this.unpub_changed_products_type[key]["_rev"];
-      this.insertData(key, this.unpub_changed_products_type[key], _doc => {});
-      delete this.unpub_changed_products_type[key];
+    Object.keys(this.unpubChangedProductsType).forEach(key => {
+      delete this.unpubChangedProductsType[key]["_id"];
+      delete this.unpubChangedProductsType[key]["_rev"];
+      this.insertData(key, this.unpubChangedProductsType[key], _doc => { });
+      delete this.unpubChangedProductsType[key];
     });
   }
 
-  insertData(_key, _val, _callback) {
+  insertData(_key: string, _val: string, _callback: any) {
     _key = _key.trim();
     _key = _key.replace(/ /g, "");
     this.database.put(_key, _val).then(doc => {

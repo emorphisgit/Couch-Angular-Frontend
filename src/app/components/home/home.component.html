@@ -19,7 +19,7 @@
         Publish product type(s)
       </div>
       <div class="typ_d3">
-        <div *ngFor="let type of products_type ; let i = index " [attr.data-index]="i">
+        <div *ngFor="let type of productsType ; let i = index " [attr.data-index]="i">
           <ng-container *ngIf="type.is_published == '1'">
             <label><input type="checkbox" (change)="checkChange($event, type, 'pub');" /><span class="typ_d4">{{type.name}}</span>
             </label>
@@ -27,7 +27,7 @@
         </div>
       </div>
       <div class="typ_d5">
-        <button class="w3-button w3-blue typ_btn" type="" (click)="unPublish();">Unpublish</button>
+        <button class="w3-button w3-blue typ_btn" (click)="unPublish();">Unpublish</button>
       </div>
     </div>
     <!--unpublish product type list end-->
@@ -37,7 +37,7 @@
         Unpublish product type(s)
       </div>
       <div class="typ_d3">
-        <div *ngFor="let type of products_type ; let i = index " [attr.data-index]="i">
+        <div *ngFor="let type of productsType ; let i = index " [attr.data-index]="i">
           <ng-container *ngIf="type.is_published == '0'">
             <label><input type="checkbox" (change)="checkChange($event, type, 'punpubub');" /><span class="typ_d4">{{type.name}}</span>
             </label>

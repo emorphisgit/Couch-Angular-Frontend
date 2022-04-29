@@ -4,15 +4,15 @@ import { ConfigData } from "../config";
 
 @Injectable()
 export class PouchDBService {
-  isInstantiated: boolean;
-  database: any;
-  db_name: any;
   listener: EventEmitter<any> = new EventEmitter();
+  database: any;
+  dbName: string;
+  isInstantiated: boolean;
 
   constructor(private config: ConfigData) {
-    this.db_name = this.config.db_name;
+    this.dbName = this.config.DB_NAME;
     if (!this.isInstantiated) {
-      this.database = new PouchDB(this.db_name);
+      this.database = new PouchDB(this.dbName);
       this.isInstantiated = true;
     }
   }
